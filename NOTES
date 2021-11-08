@@ -1,0 +1,12 @@
+
+
+
+
+
+#ELASTICSEARCH
+
+Download latest version of elasticsearch and unzip
+Go to ./bin and open cmd there and run the file "elasticsearch"
+got to http://localhost:9200/ to check if its up and running
+
+##
