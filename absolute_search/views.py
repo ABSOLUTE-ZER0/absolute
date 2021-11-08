@@ -4,6 +4,7 @@ from django.template import context, loader
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .nlp.ranking import default_sorting
 
 
 es = Elasticsearch("http://public:uKwNfMe4RizebrD@localhost:9200")
@@ -45,12 +46,15 @@ def index(request):
 		# sort=sort,
 		)
 
+		final_result = {}
 
-
-		template = loader.get_template('absolute_search/index.html')
-		context = {
-
+		metadata = {
+			'total_results': result['hits']['total']['value']
 		}
 
-		return JsonResponse(result)
+		final_result['metadata'] = metadata
+		final_result['results'] = default_sorting(result)
+
+
+		return JsonResponse(final_result, safe=False)
 
