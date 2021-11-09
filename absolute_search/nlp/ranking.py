@@ -17,12 +17,15 @@ def default_sorting(data):
 	old_high_score_results = []
 
 	for i in unsorted_data:
-		if(current_year - datetime.strptime(i['_source']['modified'], "%Y-%m-%dT%H:%M:%S").year <= 3):
+		i['data'] = i.pop("_source")
+		i['score'] = i.pop("_score")
+		i['index'] = i.pop("_index")
+		if(current_year - datetime.strptime(i['data']['modified'], "%Y-%m-%dT%H:%M:%S").year <= 3):
 			latest_results.append(i)
 		else:
 			old_high_score_results.append(i)
 		
-	final_results = [*latest_results, *old_high_score_results]   
+	final_results = [*latest_results, *old_high_score_results] 
 
 	return final_results
 
@@ -39,14 +42,17 @@ def normalize_sorting(data):
 	max_score = data['hits']['max_score']
 
 	def get_score(data):
-		return data['_score']
+		return data['score']
 
 	for i in sorted_data:
-		time_diff = current_year - datetime.strptime(i['_source']['modified'], "%Y-%m-%dT%H:%M:%S").year
-		i['_score'] = (i['_score'] / max_score ) # normalization (assuming min value is 0)
+		i['score'] = i.pop("_score")
+		i['index'] = i.pop("_index")
+		i['data'] = i.pop("_source")
+		time_diff = current_year - datetime.strptime(i['data']['modified'], "%Y-%m-%dT%H:%M:%S").year
+		i['score'] = (i['score'] / max_score ) # normalization (assuming min value is 0)
 			
 		if(time_diff < 3):
-			i['_score'] += (3-time_diff) * 0.5 / max_score # adding the value 
+			i['score'] += (3-time_diff) * 1 / max_score # adding the value 
 
 	sorted_data.sort(key=get_score, reverse=True)
 	

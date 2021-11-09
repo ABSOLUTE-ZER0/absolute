@@ -1,0 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 62.5%;
+}
+
+body {
+  background-image: url("../images/bg_black.webp");
+  min-height: 100vh;
+  min-width: 100vw;
+  background-position: center;
+}
+
+.logo_main {
+  height: 10rem;
+  aspect-ratio: 5/1;
+  top: calc(45% - 13rem);
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.search_bar--div {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: 80rem;
+  height: 5rem;
+  display: flex;
+  border-radius: 50rem;
+  align-items: center;
+}
+
+.search_bar--icon {
+  font-size: 2rem;
+  color: rgb(80, 80, 80);
+  margin: 0 2rem;
+}
+
+.search_bar--form{
+  width: 100%;
+}
+
+.search_bar {
+  background-color: transparent;
+  width: calc(100% - 3rem);
+  font-size: 2.5rem;
+  color: rgb(32, 32, 32);
+  border: 0;
+}
+
+.search_bar:focus {
+  outline: none;
+}

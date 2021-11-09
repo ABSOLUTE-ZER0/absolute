@@ -1,12 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/6afec0209b.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
   <title>Absolute | Security Search Engine</title>
 </head>
+
 <body>
-  <h1>Hello</h1>
+  <img class="logo_main" src="{% static 'images/logo.webp' %}">
+  <div class="search_bar--div">
+    <i class="fas fa-search search_bar--icon"></i>
+    <form class="search_bar--form" action="" method="post">
+      {% csrf_token %}
+      <input type="text" name="query" id="search_bar" class="search_bar">
+    </form>
+  </div> 
 </body>
+
 </html>

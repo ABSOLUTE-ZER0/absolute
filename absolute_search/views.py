@@ -1,10 +1,11 @@
 from django.http import JsonResponse, HttpResponse
 from elasticsearch import Elasticsearch
 from django.template import context, loader
+from django.shortcuts import render, redirect
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .nlp.ranking import default_sorting
+from .nlp.ranking import default_sorting, normalize_sorting
 
 
 es = Elasticsearch("http://public:uKwNfMe4RizebrD@localhost:9200")
@@ -23,38 +24,40 @@ def index(request):
 
 		return HttpResponse(template.render(context, request))
 
-
 	# POST REQUEST
 
 	elif request.method == 'POST':
-		query = request.headers['query']
+		query = request.POST['query']
+		return redirect("/q={}".format(query))
 
-		search_query = {
+
+def search_results(request, query):
+	search_query = {
 			"query_string": 
 			{
 				"query": query
 			}
 		}
 
-		# sort = {
-		#   "modified": "desc"
-		# }
+	# sort = {
+	#   "modified": "desc" 
+	# }
 
-		result = es.search(index = "nvd_index", 
-		query = search_query, 
-		size = 100000,
-		# sort=sort,
-		)
+	result = es.search(index = "nvd_index", 
+	query = search_query, 
+	size = 100000,
+	# sort=sort,
+	)
 
-		final_result = {}
+	metadata = {
+		'total_results': result['hits']['total']['value']
+	}
 
-		metadata = {
-			'total_results': result['hits']['total']['value']
-		}
+	final_result = normalize_sorting(result)
 
-		final_result['metadata'] = metadata
-		final_result['results'] = default_sorting(result)
+	context = {
+		"results": final_result,
+		"metadata": metadata,
+	}
 
-
-		return JsonResponse(final_result, safe=False)
-
+	return render(request, 'absolute_search/search_results.html', context)
