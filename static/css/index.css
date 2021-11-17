@@ -1,9 +1,31 @@
+html {
+  font-size: 62.5%;
+}
+
 * {
   margin: 0;
   padding: 0;
 }
-html {
-  font-size: 62.5%;
+
+*::-webkit-scrollbar {
+  width: 22px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 8px solid transparent;
+  padding: 2rem;
+  border-radius: 5rem;
+  background: grey;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  border: 6px solid transparent;
+}
+
+::selection {
+  background-color: green;
+  color: white;
 }
 
 body {
@@ -38,19 +60,21 @@ body {
 .search_bar--icon {
   font-size: 2rem;
   color: rgb(80, 80, 80);
-  margin: 0 2rem;
+  margin: 0 1.5rem;
 }
 
-.search_bar--form{
+.search_bar--form {
   width: 100%;
+  margin-bottom: 0.3rem;
 }
 
 .search_bar {
   background-color: transparent;
   width: calc(100% - 3rem);
-  font-size: 2.5rem;
+  font-size: 1.7rem;
   color: rgb(32, 32, 32);
   border: 0;
+  font-weight: 500;
 }
 
 .search_bar:focus {

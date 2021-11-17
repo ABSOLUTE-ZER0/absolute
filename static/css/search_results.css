@@ -1,0 +1,155 @@
+html {
+  font-size: 62.5%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*::-webkit-scrollbar {
+  width: 22px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 8px solid transparent;
+  padding: 2rem;
+  border-radius: 5rem;
+  background: grey;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  border: 6px solid transparent;
+}
+
+::selection {
+  background-color: green;
+  color: white;
+}
+
+body {
+  background-color: rgb(30, 30, 30);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 13.5rem;
+  padding-bottom: 3.5rem;
+  border-bottom: 1px solid grey;
+}
+
+.header__logo {
+  width: 20rem;
+  margin: 2.5rem;
+  margin-right: 5rem;
+}
+
+.header__main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  justify-content: center;
+}
+
+.header__search_bar--div {
+  display: flex;
+  background-color: white;
+  width: 60rem;
+  height: 4.5rem;
+  border-radius: 50rem;
+  align-items: center;
+}
+
+.header__search_bar--form {
+  width: calc(100% - 4rem);
+}
+
+.search_bar {
+  background-color: transparent;
+  width: 100%;
+  margin-left: 2rem;
+  font-size: 1.8rem;
+  color: rgb(32, 32, 32);
+  border: 0;
+}
+
+.search_bar:focus {
+  outline: none;
+}
+
+.search_bar--icon {
+  margin: 0 auto;
+  font-size: 1.4rem;
+}
+
+.header__sorting-div {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  bottom: -2.5rem;
+  width: 100%;
+}
+
+.header__sorting {
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.header__sorting > span {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: rgb(0, 255, 0);
+  bottom: -1.1rem;
+  left: 0;
+  display: none;
+}
+
+.header__sorting:hover {
+  color: rgb(0, 255, 0);
+}
+
+.header__sorting:hover > span {
+  display: block;
+}
+
+.header__sorting-title {
+  color: rgb(210, 143, 255);
+  font-size: 1.5rem;
+  text-decoration: none;
+  cursor: default;
+}
+
+.header__sorting-title:hover {
+  color: rgb(210, 143, 255);
+}
+
+.header__sorting.active {
+  color: rgb(0, 255, 0);
+}
+
+.header__sorting.active > span {
+  display: block;
+}
+
+.main {
+  padding-left: 27.5rem;
+}
+
+.totaldocuments {
+  font-size: 1.4rem;
+  color: grey;
+  margin-top: 1rem;
+}
+
+.content{
+  display: flex;
+  width: 60rem;
+  flex-direction: column;
+}
