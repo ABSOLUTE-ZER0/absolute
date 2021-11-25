@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
-from .nlp.ranking import default_sorting, normalize_sorting
+from .nlp.ranking import default_sorting, normalize_sorting, preprocess_sorting, date_sorting, date_asc_sorting
 from django.core.paginator import Paginator
 
 es = Elasticsearch("http://public:uKwNfMe4RizebrD@localhost:9200")
@@ -29,7 +29,7 @@ def search_results(request, query, page=1, sort="default"):
 
 	if request.method == 'GET':
 		search_query = {
-				"query_string": 
+				"query_string":
 				{
 					"query": query
 				}
@@ -37,29 +37,53 @@ def search_results(request, query, page=1, sort="default"):
 
 		result = es.search(index = "nvd_index", 
 		query = search_query, 
-		size = 100000,
+		size = 1000000,
 		)
 
 		metadata = {
 			'total_results': result['hits']['total']['value'],
 			'query': query,
+			'sort': sort,
+			"path": request.path.split("&page")[0]
 		}
 
 		if(sort == "default"):
 			final_result = normalize_sorting(result)
 		elif(sort == "hybrid"):
 			final_result = default_sorting(result)
-		elif(sort == "relevance"):
-			final_result = result
+		elif(sort == "relevance"): 
+			final_result = preprocess_sorting(result) 
+		elif(sort == "date"): 
+			final_result = date_sorting(result) 
+		elif(sort == "date_asc"): 
+			final_result = date_asc_sorting(result) 
 
 
-		p = Paginator(final_result, 20)
+		p = Paginator(final_result, 15)
 
 		display_result = p.page(page)
+
+		if(page > 5 and page < (p.num_pages -5 )):
+			page_range = range(page-5, page+6)
+		elif(page < 5):
+			page_range = range(1, 11)
+		elif(page > (p.num_pages -5 )):
+			page_range = range((p.num_pages - 10 ), (p.num_pages+1))
+
+		pagination = {
+			"current": page,
+			"max": p.num_pages,
+			"next": display_result.next_page_number() if display_result.has_next() else None,
+			"previous": display_result.previous_page_number() if display_result.has_previous() else None,
+			"range": page_range,
+			"has_previous": display_result.has_previous(),
+			"has_next": display_result.has_next(),
+		}
 
 		context = {
 			"results": display_result,
 			"metadata": metadata,
+			"pagination": pagination,
 		}
 
 		return render(request, 'absolute_search/search_results.html', context)
@@ -69,3 +93,26 @@ def search_results(request, query, page=1, sort="default"):
 	elif request.method == 'POST':
 		query = request.POST['query']
 		return redirect("/q={}".format(query))
+
+
+
+def doc(request, index, id):
+
+	try:
+		result = es.get(index="nvd_index", id=id.upper())
+		
+		metadata = {
+
+		}
+
+		context = {
+			"metadata": metadata,
+			"result": result,
+		}
+		return render(request, 'absolute_search/doc.html', context)
+
+	except:
+		return redirect("/q={}".format(id))
+
+
+

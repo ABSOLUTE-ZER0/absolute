@@ -20,6 +20,7 @@ def default_sorting(data):
 		i['data'] = i.pop("_source")
 		i['score'] = i.pop("_score")
 		i['index'] = i.pop("_index")
+		i['id'] = i.pop("_id")
 		if(current_year - datetime.strptime(i['data']['modified'], "%Y-%m-%dT%H:%M:%S").year <= 3):
 			latest_results.append(i)
 		else:
@@ -46,7 +47,8 @@ def normalize_sorting(data):
 
 	for i in sorted_data:
 		i['score'] = i.pop("_score")
-		i['index'] = i.pop("_index")
+		i['index'] = i.pop("_index").split("_")[0]
+		i['id'] = i.pop("_id")
 		i['data'] = i.pop("_source")
 		time_diff = current_year - datetime.strptime(i['data']['modified'], "%Y-%m-%dT%H:%M:%S").year
 		i['score'] = (i['score'] / max_score ) # normalization (assuming min value is 0)
@@ -57,3 +59,56 @@ def normalize_sorting(data):
 	sorted_data.sort(key=get_score, reverse=True)
 	
 	return sorted_data
+
+
+
+def preprocess_sorting(data):
+
+	unsorted_data = data['hits']['hits']
+
+	for i in unsorted_data:
+		i['data'] = i.pop("_source")
+		i['score'] = i.pop("_score")
+		i['index'] = i.pop("_index")
+		i['id'] = i.pop("_id")
+
+	return unsorted_data
+
+
+def date_sorting(data):
+
+	unsorted_data = data['hits']['hits']
+
+
+	for i in unsorted_data:
+		i['data'] = i.pop("_source")
+		i['score'] = i.pop("_score")
+		i['index'] = i.pop("_index")
+		i['id'] = i.pop("_id")
+
+	def get_date(data):
+		return data['data']['modified']
+
+	unsorted_data.sort(key=get_date, reverse=True)
+
+	return unsorted_data
+
+
+def date_asc_sorting(data):
+
+	unsorted_data = data['hits']['hits']
+
+
+	for i in unsorted_data:
+		i['data'] = i.pop("_source")
+		i['score'] = i.pop("_score")
+		i['index'] = i.pop("_index")
+		i['id'] = i.pop("_id")
+
+	def get_date(data):
+		return data['data']['modified']
+
+	unsorted_data.sort(key=get_date, reverse=False)
+
+	return unsorted_data
+

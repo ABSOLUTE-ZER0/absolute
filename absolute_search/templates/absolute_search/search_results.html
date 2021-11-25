@@ -2,82 +2,94 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="{% static 'images/favicon.ico' %}"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://kit.fontawesome.com/6afec0209b.js"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'css/search_results.css' %}"
-    />
-    <title>{{ metadata.query }} - Absolute | Security Search Engine</title>
-  </head>
-  <body>
-    <header class="header">
-      <img class="header__logo" src="{% static 'images/logo.webp' %}" />
-      <div class="header__main">
-        <div class="header__search_bar--div">
-          <form class="header__search_bar--form" action="" method="post">
-            {% csrf_token %}
-            <input
-              value="{{ metadata.query }}"
-              type="text"
-              name="query"
-              id="search_bar"
-              class="search_bar"
-            />
-          </form>
-          <i class="fas fa-search search_bar--icon"></i>
-        </div>
-        <div class="header__sorting-div">
-          <a class="header__sorting-title">Sorting:</a>
-          <a class="header__sorting active">Default<span></span></a>
-          <a class="header__sorting">Hybrid<span></span></a>
-          <a class="header__sorting">Relevance<span></span></a>
-          <a class="header__sorting">Date<span></span></a>
-          <a class="header__sorting">Date (Asc)<span></span></a>
-        </div>
-      </div>
-    </header>
 
-    <div class="main">
-      <div class="metadata">
-        <p class="totaldocuments">
-          Found {{ metadata.total_results }} relevant documents
-        </p>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+  <script src="https://kit.fontawesome.com/6afec0209b.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search_results.css' %}" />
+  <title>{{ metadata.query }} - Absolute | Security Search Engine</title>
+</head>
+
+<body>
+  <header class="header">
+    <a href="/">
+      <img class="header__logo" src="{% static 'images/logo.webp' %}" />
+    </a>
+    <div class="header__main">
+      <div class="header__search_bar--div">
+        <form class="header__search_bar--form" action="" method="post">
+          {% csrf_token %}
+          <input value="{{ metadata.query }}" type="text" name="query" id="search_bar" class="search_bar" />
+        </form>
+        <i class="fas fa-search search_bar--icon"></i>
       </div>
-      <div class="content">
-        {% for result in results %}
-        <div class="content__result">
-          <p class="content__result-title">{{ result.data.title }}</p>
-          <p class="content__result-desc">{{ result.data.desc|truncatewords:25 }}</p>
-          <p class="content__result-score">{{ result.score }}</p>
-        </div>
-        {% endfor %}
+      <div class="header__sorting-div">
+        <a class="header__sorting-title">Sorting:</a>
+        <a href="q={{ metadata.query }}&sort=default" class="header__sorting  {% if metadata.sort == 'default' %} active {% endif %}">Default<span></span></a>
+        <a href="q={{ metadata.query }}&sort=hybrid" class="header__sorting  {% if metadata.sort == 'hybrid' %} active {% endif %}">Hybrid<span></span></a>
+        <a href="q={{ metadata.query }}&sort=relevance" class="header__sorting  {% if metadata.sort == 'relevance' %} active {% endif %}">Relevance<span></span></a>
+        <a href="q={{ metadata.query }}&sort=date" class="header__sorting  {% if metadata.sort == 'date' %} active {% endif %}">Date<span></span></a>
+        <a href="q={{ metadata.query }}&sort=date_asc" class="header__sorting  {% if metadata.sort == 'date_asc' %} active {% endif %}">Date (Asc)<span></span></a>
       </div>
     </div>
+  </header>
 
-    <!-- Bootstrap  -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+  <div class="main">
+    <div class="metadata">
+      <p class="totaldocuments">
+        Found {{ metadata.total_results }} relevant documents
+      </p>
+    </div>
+    <div class="content">
+      {% for result in results %}
+      <div class="content__result">
+        <p class="content__result-url">http://127.0.0.1:8000 › {{ result.index }} › {{ result.id|lower }}</p>
+        <a href='doc/{{ result.index }}/{{ result.id|lower }}' class="content__result-title">{{ result.data.title }}</a>
+        <p class="content__result-desc">{{ result.data.desc|truncatewords:30 }}</p>
+        {% if result.data.warning != None %}
+        <p class="content__result-new">NEW</p>
+        {% endif %}
+        <p class="content__result-score">SCORE: {{ result.score|floatformat:"3" }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="pagination">
+      {% if pagination.current != 1 %}
+      <a class="pagination__first" href="{{ metadata.path }}&page=1">&lt;&lt;</a>
+      {% endif %}
+
+      {% if pagination.has_previous %}
+      <a class="pagination__previous" href="{{ metadata.path }}&page={{ pagination.previous }}">&lt;</a>
+      {% endif %}
+
+      {% for num in pagination.range %}
+      {% if num == pagination.current %}
+      <span class="pagination__current"><b>{{ num }}</b></span>
+      {% else %}
+      <a class="pagination__num" href="{{ metadata.path }}&page={{ num }}"> {{ num }}</a>
+      {% endif %}
+      {% endfor %}
+
+      {% if pagination.has_next %}
+      <a class="pagination__next" href="{{ metadata.path }}&page={{ pagination.next }}">&gt;</a>
+      {% endif %}
+
+      {% if pagination.current != pagination.max %}
+      <a class="pagination__last" href="{{ metadata.path }}&page={{ pagination.max }}">&gt;&gt;</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bootstrap  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+  </script>
+</body>
+
 </html>

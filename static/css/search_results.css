@@ -101,7 +101,7 @@ body {
   position: relative;
 }
 
-.header__sorting > span {
+.header__sorting>span {
   position: absolute;
   width: 100%;
   height: 2px;
@@ -115,7 +115,7 @@ body {
   color: rgb(0, 255, 0);
 }
 
-.header__sorting:hover > span {
+.header__sorting:hover>span {
   display: block;
 }
 
@@ -134,22 +134,130 @@ body {
   color: rgb(0, 255, 0);
 }
 
-.header__sorting.active > span {
+.header__sorting.active>span {
   display: block;
 }
 
 .main {
   padding-left: 27.5rem;
+  width: fit-content;
 }
 
 .totaldocuments {
   font-size: 1.4rem;
   color: grey;
   margin-top: 1rem;
+  margin-bottom: 3rem;
 }
 
-.content{
+.content {
   display: flex;
   width: 60rem;
   flex-direction: column;
+}
+
+.content__result {
+  position: relative;
+}
+
+.content__result-url {
+  color: rgb(182, 182, 182);
+  margin-bottom: 0;
+  font-size: 1.3rem;
+}
+
+.content__result-title {
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1.7rem;
+  margin: 0.5rem 0;
+  display: block;
+  color: rgb(205, 129, 255);
+  width: fit-content;
+}
+
+.content__result-title:hover {
+  color: rgb(157, 0, 255);
+}
+
+.content__result-title:visited {
+  color: rgb(239, 212, 255);
+}
+
+.content__result-desc {
+  margin-bottom: 3.5rem;
+  color: rgb(231, 231, 231);
+  font-size: 1.4rem;
+  word-break: break-word;
+}
+
+.content__result-score {
+  position: absolute;
+  top: 1.4rem;
+  right: 0rem;
+  background-color: green;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.content__result-new {
+  position: absolute;
+  top: 1.4rem;
+  right: 9rem;
+  background-color: rgb(60, 60, 255);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.content__result-score::selection {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+.content__result-new::selection {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  font-size: 1.5rem;
+  margin: 5rem 0;
+}
+
+.pagination__first,
+.pagination__last,
+.pagination__previous,
+.pagination__next,
+.pagination__num {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid green;
+  text-decoration: none;
+  color: white;
+}
+
+.pagination__first:hover,
+.pagination__last:hover,
+.pagination__previous:hover,
+.pagination__next:hover,
+.pagination__num:hover {
+  border: 1px solid green;
+  background-color: green;
+  color: white;
+}
+
+.pagination__current {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: green;
+  border: 1px solid green;
+  text-decoration: none;
+  color: white;
 }
