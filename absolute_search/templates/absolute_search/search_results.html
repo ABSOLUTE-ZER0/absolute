@@ -51,7 +51,7 @@
         <p class="content__result-url">http://127.0.0.1:8000 › {{ result.index }} › {{ result.id|lower }}</p>
         <a href='doc/{{ result.index }}/{{ result.id|lower }}' class="content__result-title">{{ result.data.title }}</a>
         <p class="content__result-desc">{{ result.data.desc|truncatewords:30 }}</p>
-        {% if result.data.warning != None %}
+        {% if result.data.warning == 'This vulnerability has been received by the NVD and has not been analyzed' %}
         <p class="content__result-new">NEW</p>
         {% endif %}
         <p class="content__result-score">SCORE: {{ result.score|floatformat:"3" }}</p>

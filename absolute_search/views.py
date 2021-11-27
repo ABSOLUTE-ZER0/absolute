@@ -65,9 +65,9 @@ def search_results(request, query, page=1, sort="default"):
 
 		if(page > 5 and page < (p.num_pages -5 )):
 			page_range = range(page-5, page+6)
-		elif(page < 5):
+		elif(page <= 5):
 			page_range = range(1, 11)
-		elif(page > (p.num_pages -5 )):
+		elif(page >= (p.num_pages - 5 )):
 			page_range = range((p.num_pages - 10 ), (p.num_pages+1))
 
 		pagination = {
@@ -100,6 +100,7 @@ def doc(request, index, id):
 
 	try:
 		result = es.get(index="nvd_index", id=id.upper())
+		display_result = result['_source']
 		
 		metadata = {
 
@@ -107,7 +108,7 @@ def doc(request, index, id):
 
 		context = {
 			"metadata": metadata,
-			"result": result,
+			"result": display_result,
 		}
 		return render(request, 'absolute_search/doc.html', context)
 
