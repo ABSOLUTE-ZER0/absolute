@@ -1,5 +1,9 @@
 *.json
+*.db
 node_modules
+dbs
+test.ipynb
+logs
 
 ### Django ###
 *.log

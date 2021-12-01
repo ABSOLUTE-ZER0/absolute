@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from .nlp.ranking import default_sorting, normalize_sorting, preprocess_sorting, date_sorting, date_asc_sorting
-from .nlp.summary import article_summerizer
+from .nlp.summary import article_summerizer, cwe_scrapper
 from django.core.paginator import Paginator
 
 es = Elasticsearch("http://public:uKwNfMe4RizebrD@localhost:9200")
@@ -98,7 +98,7 @@ def search_results(request, query, page=1, sort="default"):
 
 
 def doc(request, index, id):
-	try:
+	# try:
 		if(index == "nvd"):
 			result = es.get(index="nvd_index", id=id.upper())
 			display_result = result['_source']
@@ -108,9 +108,15 @@ def doc(request, index, id):
 
 			if reference_links:
 				reference_summaries = article_summerizer(reference_links, 4, 35)
+
+			if cwe_links:
+				cwe_data = cwe_scrapper(cwe_links)
 			
 			metadata = {
-				'summaries': reference_summaries,
+				'summaries': {
+					'article': reference_summaries, 
+					'cwe': cwe_data, 
+					}
 			}
 
 			context = {
@@ -119,8 +125,13 @@ def doc(request, index, id):
 			}
 			return render(request, 'absolute_search/doc.html', context)
 
-	except:
-		return redirect("/q={}".format(id)) 
+	# except:
+	# 	return redirect("/q={}".format(id)) 
+
+
+
+
+
 
 
 

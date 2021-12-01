@@ -1,18 +1,14 @@
-import bs4 as bs
-import urllib.request
 import re
 import nltk
-nltk.download('punkt')
 import heapq
-import sys
+import os
+import json
+from scrapyd_api import ScrapydAPI, FINISHED
+import uuid
+import time
 
-
-
-cwe_domain = 'http://cwe.mitre.org/'
-
-def summerize():
-
-  return 0
+nltk.download('punkt')
+scrapyd = ScrapydAPI('http://localhost:6800')
 
 
 def article_summerizer(urls, num_of_sentences=5, sen_length=40):
@@ -20,32 +16,36 @@ def article_summerizer(urls, num_of_sentences=5, sen_length=40):
 
   for url in urls:
     try:
-      hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'}
-      req = urllib.request.Request(url, headers=hdr)
-      scraped_article = urllib.request.urlopen(req)
-      article = scraped_article.read()
+      id = uuid.uuid1()
+      filename = './absolute_search/nlp/{}.json'.format(id)
+      setting={
+        'FEED_URI': filename,
+        }
+      
+      job_id = scrapyd.schedule('absolute_scrapper', 'article_spider', settings=setting, url=url)
+      job_status = scrapyd.job_status('absolute_scrapper', job_id)
 
+      count = 0
+      while(True):
+        if(job_status == FINISHED and os.path.exists(filename)):
+          with open(filename) as json_file:
+            data = json.load(json_file)
+            text = data['data']
+          break
+        elif(count > 200):
+          raise Exception('Too Freaking Long!! Thats what she said')
+        else:
+          count += 1
+          time.sleep(.05)
+          job_status = scrapyd.job_status('absolute_scrapper', job_id)
 
-      parse_article = bs.BeautifulSoup(article, 'lxml')
-      article_para = parse_article.find_all('p')
-
-      text = ''
-      for p in article_para:
-        text += p.text
-
-      # text = re.sub(r'\[[0-9]*\]', ' ', text)
-      # text = re.sub(r'\s', " ", text)
-
-      new_text = text
-      # new_text = re.sub(r'\s', " ", new_text)
-
-      sentences = nltk.sent_tokenize(new_text)
+      sentences = nltk.sent_tokenize(text)
 
       nltk.download('stopwords')
       stopwords = nltk.corpus.stopwords.words('english')
 
       token_freq = {}
-      for token in nltk.word_tokenize(new_text):
+      for token in nltk.word_tokenize(text):
         if(token not in stopwords):
           if token not in token_freq.keys():
             token_freq[token] = 1
@@ -70,13 +70,44 @@ def article_summerizer(urls, num_of_sentences=5, sen_length=40):
       extracted_sentences = heapq.nlargest(num_of_sentences, weight, key=weight.get)
       summary = ' '.join(extracted_sentences)
       summaries[url] = summary
-    except:
+
+      # Deleting the file
+      os.remove(filename)
+
+    except Exception as e:
       summaries[url] = ""
       
   return summaries
 
 
-def cwe_scrapper():
+def cwe_scrapper(urls):
+  reports = {}
 
-  return 0
+  for url in urls:
+    id = uuid.uuid1()
+    filename = './absolute_search/nlp/{}.json'.format(id)
+    setting={
+      'FEED_URI': filename,
+      }
+    
+    job_id = scrapyd.schedule('absolute_scrapper', 'cwe_spider', settings=setting, url=url)
+    job_status = scrapyd.job_status('absolute_scrapper', job_id)
+
+    count = 0
+    while(True):
+      if(job_status == FINISHED and os.path.exists(filename)):
+        with open(filename) as json_file:
+          data = json.load(json_file)
+          reports[url] = data
+          break
+      elif(count > 200):
+        raise Exception('Too Freaking Long!! Thats what she said')
+      else:
+        count += 1
+        time.sleep(.05)
+        job_status = scrapyd.job_status('absolute_scrapper', job_id)
+  
+  os.remove(filename)
+  
+  return reports
 

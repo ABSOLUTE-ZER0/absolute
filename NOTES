@@ -9,4 +9,7 @@ Download latest version of elasticsearch and unzip
 Go to ./bin and open cmd there and run the file "elasticsearch"
 got to http://localhost:9200/ to check if its up and running
 
-##
+#SCRAPYD-API
+
+deploy: scrapyd-deploy local
+schedule scrapyd.schedule('absolute_scrapper', 'article_spider', settings=setting, url="http://cwe.mitre.org/data/definitions/611.html")
