@@ -1,3 +1,8 @@
+# THE FOLLOWING SPIDER IS NOT BEING USED AS OF NOW
+# IT WORKS FINE BUT SCHEDULING SCRAPPER USING SCRAPYD TAKES FEW SECONDS TO START
+# EVEN THOUGH BS4 IS SLOW, IT AVOIDS REMOTE REQUETS FOR DAEMON AND 
+# BS4 EVEN AVOIDS FILE CREATION FOR STORING THE SCRAPPED DATA, READING IT AND THEN DELETING IT
+
 import scrapy
 import re
 
@@ -22,5 +27,3 @@ class ArticleSpiderSpider(scrapy.Spider):
         yield {
             'data': join_clean(response.xpath("//body//div/text()|//body//p/text()").getall()),
         }
-
-# EXAMPLE: scrapy crawl article_spider -a url="http://cwe.mitre.org/data/definitions/611.html"

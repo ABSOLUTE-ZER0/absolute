@@ -1,0 +1,159 @@
+{% load static %} {% load custom_index %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+  <script src="https://kit.fontawesome.com/6afec0209b.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/doc.css' %}" />
+  <title>{{ result.title }} - Absolute | Security Search Engine</title>
+</head>
+
+<body>
+  <header class="header">
+    <a class="no-hover" href="/">
+      <img class="header__logo" src="{% static 'images/logo.webp' %}" />
+    </a>
+  </header>
+
+  <div class="main">
+    <div>
+      <h1>{{ result.title }}</h1>
+      <p>{{ result.desc }}</p>
+    </div>
+
+    <div class="relevantSummaries">
+      <h2>Relevant Articles</h2>
+      <div class="relevantSummaries__articles">
+        {% for key, value in metadata.summaries.article.items %}
+        <h3>
+          <a href="{{ key }}" target="_blank">{{ key }}</a>
+        </h3>
+        <p>{{ value }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="relevantSummaries__cwe">
+        {% for key, value in metadata.summaries.cwe.items %}
+        <h3>
+          <a href="{{ key }}" target="_blank">{{ value.title | safe }}</a>
+        </h3>
+        <p>
+          THE FOLLOWING IS JUST A BRIEF REPORT OF THE FOLLOWING ARTICLE. VISIT
+          THE SITE FOR MORE DETAILED INFORMATION
+        </p>
+        <div>
+          <p>CREATED ON: {{ value.created | safe }}</p>
+          <p>LAST MODIFIED: {{ value.modified | safe }}</p>
+        </div>
+        <div>
+          <h3>Description</h4>
+          <p>{{ value.desc | safe }}</p>
+          <p>{{ value.content | safe }}</p>
+        </div>
+
+        <div>
+          <h3>Relations</h3>
+          {% for rel_key, rel_value in value.relations.items %}
+          <table style="max-width: 100%" class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>{{ rel_key }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in rel_value %}
+              <tr>
+                <td>{{ i | safe }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endfor %}
+        </div>
+
+        <div>
+          <h3>Mode of injection</h3>
+          <table style="max-width: 100%" class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Phase</th>
+                <th scope="col">Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in value.injection %}
+              <tr>
+                <th>{{ i.phase }}</th>
+                <td>{{ i.note | safe }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3>Notes</h3>
+          {% for i in value.notes.headings %}
+          <h4>{{ value.notes.headings | index:forloop.counter0 }}</h4>
+          <p>{{ value.notes.content | index:forloop.counter0 | safe }}</p>
+          {% endfor %}
+        </div>
+
+        <div>
+          <h3>Related attack patterns</h3>
+          <table style="max-width: 100%" class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th scope="col">CAPEC-ID</th>
+                <th scope="col">Attack Pattern Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in value.related_attack_pattern %}
+              <tr>
+                <th>{{ i.link | safe }}</th>
+                <td>{{ i.name | safe }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="extractedData">
+      <h2>Extracted Data</h2>
+      <div class="content__result">
+        <table style="max-width: 100%" class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key, value in result.items %}
+            <tr>
+              <th>{{ key }}</th>
+              <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>

@@ -4,6 +4,7 @@ node_modules
 dbs
 test.ipynb
 logs
+TODO
 
 ### Django ###
 *.log

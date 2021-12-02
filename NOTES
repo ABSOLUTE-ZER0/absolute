@@ -13,3 +13,6 @@ got to http://localhost:9200/ to check if its up and running
 
 deploy: scrapyd-deploy local
 schedule scrapyd.schedule('absolute_scrapper', 'article_spider', settings=setting, url="http://cwe.mitre.org/data/definitions/611.html")
+
+
+scrapy crawl cwe_spider -a url="http://cwe.mitre.org/data/definitions/20.html" -o temp.json
