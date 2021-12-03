@@ -19,27 +19,22 @@ def article_summarizer(urls, num_of_sentences=5, sen_length=40):
 
   for url in urls:
     try:
-
-      if(url.find(".pdf")):
+      if(url.contains(".pdf")):
         summaries[url] = "Can't extract content from non HTML document. Click on the link to vist the page"
-        continue
+        continue 
 
       hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'}
       req = urllib.request.Request(url, headers=hdr)
       scraped_article = urllib.request.urlopen(req, context=context)
-      article = scraped_article.read()
 
-      parse_article = bs.BeautifulSoup(article, "lxml")
-
-
-      #---------  Certain HTML articles do not have content-type meta tag ---------#
+      content_type = scraped_article.headers.get('content-type').split(";")[0]
       
-      # encode_type = parse_article.select('meta[http-equiv="content-type" i]')
-      # content_type = encode_type[0]['content'].split(";")[0]
+      if(content_type != "text/html"):
+        summaries[url] = "summariessummariessummaries Cant extract content from non HTML document"
+        continue
 
-      # if(content_type != "text/html"):
-      #   summaries[url] = "Cant extract content from non HTML document"
-      #   continue
+      article = scraped_article.read()
+      parse_article = bs.BeautifulSoup(article, "lxml")
 
       article_para = parse_article.select("body p")
 
@@ -121,7 +116,7 @@ def cwe_scrapper(urls):
         time.sleep(.05)
         job_status = scrapyd.job_status('absolute_scrapper', job_id)
   
-  os.remove(filename)
+    os.remove(filename)
   
   return reports
 
